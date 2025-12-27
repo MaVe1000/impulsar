@@ -7,10 +7,10 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "typecheck": "tsc --noEmit",
-    "clean": "rimraf .next"
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@crossmint/client-sdk-react-ui": "^2.6.13",
     "@impulsar/config": "*",
     "@impulsar/contracts": "*",
     "@impulsar/core": "*",
