@@ -10,15 +10,16 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@crossmint/client-sdk-react-ui": "^2.6.13",
+    "@impulsar/config": "*",
+    "@impulsar/contracts": "*",
+    "@impulsar/core": "*",
+    "@impulsar/dtos": "*",
+    "@impulsar/stellar-sdk": "*",
+    "@impulsar/ui": "*",
     "next": "^15.1.0",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "@impulsar/ui": "*",
-    "@impulsar/stellar-sdk": "*",
-    "@impulsar/contracts": "*",
-    "@impulsar/dtos": "*",
-    "@impulsar/core": "*",
-    "@impulsar/config": "*"
+    "react-dom": "^18.3.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.0.0",
