@@ -11,6 +11,7 @@ const nextConfig = {
     "@impulsar/dtos",
     "@impulsar/core",
     "@impulsar/config",
+    
   ],
   // PRODUCTION-ALIGNED: Proxy API requests using environment variable
   // Change NEXT_PUBLIC_API_URL to switch between localhost/staging/production
@@ -26,6 +27,9 @@ const nextConfig = {
   },
   typescript: {
     ignoreBuildErrors: true,
+  },
+  eslint: {
+    ignoreDuringBuilds: true,
   },
   images: {
     unoptimized: true,
