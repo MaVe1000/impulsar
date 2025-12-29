@@ -37,6 +37,6 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
     "**/*.mts"
-  ],
+, "app/api/cer/current/route.ts"  ],
   "exclude": ["node_modules"]
 }

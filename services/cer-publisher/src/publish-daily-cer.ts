@@ -1,6 +1,16 @@
-import { 
-  Keypair, 
-  Contract, 
+// CRITICAL: Load environment variables first
+import { config as loadEnv } from 'dotenv';
+import { resolve } from 'node:path';
+
+const rootEnvPath = resolve(process.cwd(), '../../.env');
+const localEnvPath = resolve(process.cwd(), '.env');
+
+loadEnv({ path: rootEnvPath });
+loadEnv({ path: localEnvPath, override: true });
+
+import {
+  Keypair,
+  Contract,
   TransactionBuilder,
   Account,
   Networks,
@@ -11,11 +21,16 @@ import * as SorobanClient from '@stellar/stellar-sdk/rpc';
 import { createClient } from '@supabase/supabase-js';
 import axios from 'axios';
 
-// Configure Supabase client
-const supabase = createClient(
-  process.env.SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+// Lazy initialization of Supabase client
+function getSupabaseClient() {
+  if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    throw new Error('SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are required');
+  }
+  return createClient(
+    process.env.SUPABASE_URL,
+    process.env.SUPABASE_SERVICE_ROLE_KEY
+  );
+}
 
 const rpcUrl = process.env.STELLAR_SOROBAN_RPC_URL || 'https://soroban-testnet.stellar.org';
 const server = new SorobanClient.Server(rpcUrl);
@@ -203,6 +218,7 @@ export async function publishDailyCER() {
     const txHash = await publishCEROnChain(today, cerValue, attestation);
     
     // STEP 5: Save to database for caching
+    const supabase = getSupabaseClient();
     const { error } = await supabase.from('cer_publications').insert({
       date: today,
       cer_value: cerValue,

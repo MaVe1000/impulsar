@@ -22,39 +22,90 @@ export function BalanceDisplay({ showCERDetails = false }: BalanceDisplayProps) 
   async function loadBalanceAndCER() {
     try {
       setLoading(true);
-      
+
+      // PASO 0: Verificar que tenemos una wallet
+      if (!wallet?.address) {
+        console.log('⏳ Esperando wallet de Crossmint...');
+        setAruUnits(0);
+        setCurrentCER(0);
+        setPesoValue(0);
+        return;
+      }
+
+      // PASO 0.5: Validar que es una dirección Stellar válida
+      const isStellarAddress = wallet.address.startsWith('G') && wallet.address.length === 56;
+
+      console.log('🔍 Consultando balance para wallet:', wallet.address);
+      console.log('🔍 Es dirección Stellar válida?', isStellarAddress);
+
+      if (!isStellarAddress) {
+        console.error('❌ ERROR: Wallet address NO es de Stellar');
+        console.error('❌ Address recibida:', wallet.address);
+        console.error('❌ Longitud:', wallet.address.length, '(debe ser 56)');
+        console.error('❌ Primer carácter:', wallet.address[0], '(debe ser "G")');
+        console.error('');
+        console.error('🔧 SOLUCIÓN: Crossmint creó una wallet de otra blockchain (Ethereum/Solana)');
+        console.error('🔧 Verificá que NEXT_PUBLIC_CHAIN=stellar-testnet en apps/web/.env.local');
+        console.error('🔧 Verificá que apiKey de Crossmint esté configurado para Stellar');
+
+        setAruUnits(0);
+        setCurrentCER(0);
+        setPesoValue(0);
+        return;
+      }
+
       // PASO 1: Obtener balance ARU desde blockchain (unidades)
       const balanceResponse = await fetch('/api/wallet/balance', {
         method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify({
           publicKey: wallet?.address,
           assetCode: 'ARU',
         }),
       });
-      
-      const { balance } = await balanceResponse.json();
-      const aruUnitsFromChain = parseFloat(balance);
-      
+
+      if (!balanceResponse.ok) {
+        throw new Error(`Balance API error: ${balanceResponse.status}`);
+      }
+
+      const balanceData = await balanceResponse.json();
+      console.log('📊 Balance response:', balanceData);
+
+      const aruUnitsFromChain = parseFloat(balanceData.balance || '0');
+
       setAruUnits(aruUnitsFromChain);
-      
+
       // PASO 2: Obtener CER actual desde backend (cache)
       const cerResponse = await fetch('/api/cer/current');
-      const { cer } = await cerResponse.json();
-      
-      setCurrentCER(cer);
-      
+
+      if (!cerResponse.ok) {
+        throw new Error(`CER API error: ${cerResponse.status}`);
+      }
+
+      const cerData = await cerResponse.json();
+      console.log('📈 CER response:', cerData);
+
+      setCurrentCER(cerData.cer);
+
       // PASO 3: Calcular valor en pesos (LOCAL, sin costo)
-      const calculatedPesos = aruUnitsFromChain * cer;
-      
+      const calculatedPesos = aruUnitsFromChain * cerData.cer;
+
       setPesoValue(calculatedPesos);
-      
+
       console.log('💰 Balance calculado:');
+      console.log(`   Wallet address: ${wallet?.address}`);
       console.log(`   ARU units: ${aruUnitsFromChain}`);
-      console.log(`   CER actual: ${cer}`);
+      console.log(`   CER actual: ${cerData.cer}`);
       console.log(`   Valor en pesos: $${calculatedPesos.toLocaleString()}`);
-      
+
     } catch (error) {
-      console.error('Error loading balance:', error);
+      console.error('❌ Error loading balance:', error);
+      // Set default values on error
+      setAruUnits(0);
+      setCurrentCER(0);
+      setPesoValue(0);
     } finally {
       setLoading(false);
     }
