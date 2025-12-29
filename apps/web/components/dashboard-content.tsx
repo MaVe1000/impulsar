@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { ArrowUpRight, ArrowDownLeft, TrendingUp, Wallet, LogOut, Zap } from "lucide-react"
 import Image from "next/image"
+import { BalanceDisplay } from "@/components/BalanceDisplay"
 
 interface WalletData {
   pulsBalance: number
@@ -101,8 +102,8 @@ export function DashboardContent() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 py-6 space-y-6">
-        {/* Balance Card */}
+      {/* Harcoded Balance Card */}
+      {/* <div className="max-w-7xl mx-auto px-4 py-6 space-y-6">        
         <Card className="border-border/40 bg-gradient-to-br from-card to-card/50">
           <CardHeader>
             <CardDescription>Balance Total</CardDescription>
@@ -119,7 +120,10 @@ export function DashboardContent() {
               <span className="text-muted-foreground">≈ {formatARS(walletData.pulsBalance * 850)}</span>
             </div>
           </CardContent>
-        </Card>
+        </Card> */}
+
+        {/* Balance Card - REAL DATA */}
+        <BalanceDisplay showCERDetails={false} />
 
         {/* Quick Actions */}
         <div className="grid grid-cols-2 gap-4">
@@ -206,6 +210,6 @@ export function DashboardContent() {
           </CardContent>
         </Card>
       </div>
-    </div>
+    //</div>
   )
 }

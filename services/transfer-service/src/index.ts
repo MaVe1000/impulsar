@@ -6,6 +6,8 @@ import { resolve } from 'node:path';
 import express from 'express';
 import cors from 'cors';
 import { validateTransferEnv } from '@impulsar/config';
+import walletRoutes from './routes/wallet.js';
+import cerRoutes from './routes/cer.js';
 
 const rootEnvPath = resolve(process.cwd(), '../../.env');
 const localEnvPath = resolve(process.cwd(), '.env');
@@ -35,6 +37,10 @@ app.get('/health', (req, res) => {
     timestamp: new Date().toISOString()
   });
 });
+
+// ARU-related routes (wallet balance, CER)
+app.use('/api/wallet', walletRoutes);
+app.use('/api/cer', cerRoutes);
 
 // Transfer domain routes
 app.get('/api/transfers', (req, res) => {

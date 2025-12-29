@@ -11,8 +11,16 @@ if (!process.env.NEXT_PUBLIC_CROSSMINT_API_KEY) {
   throw new Error("NEXT_PUBLIC_CROSSMINT_API_KEY is not set");
 }
 
-// const chain = (process.env.NEXT_PUBLIC_CHAIN ?? "") as unknown as Chain; not available in testnet
-const chain = (process.env.NEXT_PUBLIC_CHAIN ?? "") as any;
+// CRITICAL: Crossmint SÍ soporta "stellar-testnet" para MVP
+// El tipo TypeScript puede estar desactualizado, por eso usamos 'as any'
+const chain = "stellar-testnet" as any;
+
+// Debug: Verificar que la chain esté configurada correctamente
+if (typeof window !== "undefined") {
+  console.log("🔧 Crossmint Chain Configuration:");
+  console.log("  chain value:", chain);
+  console.log("  Expected: stellar-testnet (para MVP)");
+}
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
@@ -20,7 +28,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
       <CrossmintAuthProvider loginMethods={["email"]}>
         <CrossmintWalletProvider
           createOnLogin={{
-            chain,
+            chain: "stellar-testnet" as any, // ← FORZADO para testnet (MVP)
             signer: { type: "email" },
           }}
         >
