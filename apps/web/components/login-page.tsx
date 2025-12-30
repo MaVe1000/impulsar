@@ -70,13 +70,13 @@ export function LoginPage() {
             : ""
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
+    <div className="min-h-screen flex items-center justify-center pb-4">
       <Card className="w-full max-w-md border-border/40">
         <CardHeader className="space-y-6 text-center pb-8">
-          <div className="flex justify-center">
-            <div className="relative w-32 h-32">
+          <div className="flex justify-center mt-4">
+            <div className="relative w-32 h-32 ">
               <Image
-                src="/images/img-20251227-120843-641.jpg"
+                src="/images/iconoLogo.png"
                 alt="ImpulsAR Logo"
                 fill
                 className="object-contain"
@@ -86,20 +86,20 @@ export function LoginPage() {
           </div>
           <div>
             <CardTitle className="text-3xl font-bold">ImpulsAR</CardTitle>
-            <p className="text-sm text-muted-foreground mt-2">Infraestructura Pública Digital</p>
+            <p className="text-sm text-secondary-foreground mt-2">Infraestructura Pública Digital</p>
           </div>
-          <CardDescription className="text-base">
-            Accedé a tus beneficios del gobierno y gestioná tu billetera cripto
+          <CardDescription className="text-base text-neutral-400">
+            Accedé a tus beneficios del gobierno y gestioná tu billetera digital
           </CardDescription>
         </CardHeader>
         <CardContent>
           {isLoggedIn ? (
-            <div className="flex flex-col items-center justify-center gap-3 py-4 text-sm text-muted-foreground">
+            <div className="flex flex-col items-center justify-center gap-3 py-4 text-sm text-secondary-foreground">
               <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
               <span>{statusMessage || "Cargando tu sesión..."}</span>
             </div>
           ) : (
-            <div className="rounded-lg border border-border/40 bg-background/50 p-4">
+            <div className="rounded-lg border  border-border/20 bg-foreground/5  p-4">
               <EmbeddedAuthForm />
             </div>
           )}
