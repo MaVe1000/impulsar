@@ -16,34 +16,43 @@ export function LoginPage() {
   useEffect(() => {
     if (!isLoggedIn) return
 
-    if (!localStorage.getItem("impulsAR_user")) {
-      const email = user?.email ?? "usuario@impulsar.app"
-      const name = email.split("@")[0] || "Usuario ImpulsAR"
+    const email = user?.email ?? "usuario@impulsar.app"
+    const name = email.split("@")[0] || "Usuario ImpulsAR"
 
-      localStorage.setItem(
-        "impulsAR_user",
-        JSON.stringify({
-          email,
-          name,
-          loginDate: new Date().toISOString(),
-        }),
-      )
-    }
+    // Save current user session (always update with current login)
+    localStorage.setItem(
+      "impulsAR_user",
+      JSON.stringify({
+        email,
+        name,
+        loginDate: new Date().toISOString(),
+      }),
+    )
 
     if (isWalletReady) {
-      if (!localStorage.getItem("impulsAR_wallet")) {
-        localStorage.setItem(
-          "impulsAR_wallet",
-          JSON.stringify({
-            pulsBalance: 15420.5,
-            arsBalance: 0,
-            dailyYield: 0.85,
-            totalEarned: 1240.3,
-            lastUpdate: new Date().toISOString(),
-            address: wallet?.address ?? "",
-          }),
-        )
+      console.log("💾 Saving wallet to localStorage for user:", email);
+      console.log("💾 Wallet address:", wallet?.address);
+
+      // MULTI-USER WALLET STORAGE
+      // Get existing wallets object (all users' wallets)
+      const existingWalletsStr = localStorage.getItem("impulsAR_wallets")
+      const existingWallets = existingWalletsStr ? JSON.parse(existingWalletsStr) : {}
+
+      // Save this user's wallet data under their email
+      existingWallets[email] = {
+        aruBalance: 15420.5,
+        arsBalance: 0,
+        dailyYield: 0.85,
+        totalEarned: 1240.3,
+        lastUpdate: new Date().toISOString(),
+        address: wallet?.address ?? "",
       }
+
+      // Save back to localStorage
+      localStorage.setItem("impulsAR_wallets", JSON.stringify(existingWallets))
+
+      // Also save current user's wallet to impulsAR_wallet for backwards compatibility
+      localStorage.setItem("impulsAR_wallet", JSON.stringify(existingWallets[email]))
 
       router.push("/dashboard")
     }

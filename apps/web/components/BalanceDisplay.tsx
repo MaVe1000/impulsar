@@ -9,7 +9,7 @@ interface BalanceDisplayProps {
 
 export function BalanceDisplay({ showCERDetails = false }: BalanceDisplayProps) {
   const { wallet } = useWallet();
-  
+
   const [aruUnits, setAruUnits] = useState<number>(0);
   const [currentCER, setCurrentCER] = useState<number>(0);
   const [pesoValue, setPesoValue] = useState<number>(0);
@@ -23,57 +23,35 @@ export function BalanceDisplay({ showCERDetails = false }: BalanceDisplayProps) 
     try {
       setLoading(true);
 
-      // PASO 0: Verificar que tenemos una wallet
       if (!wallet?.address) {
-        console.log('⏳ Esperando wallet de Crossmint...');
-        setAruUnits(0);
-        setCurrentCER(0);
-        setPesoValue(0);
+        console.log('⏳ Esperando wallet...');
         return;
       }
 
-      // PASO 0.5: Validar que es una dirección Stellar válida
-      const isStellarAddress = wallet.address.startsWith('G') && wallet.address.length === 56;
+      // PASO 1: Obtener balance desde Crossmint Smart Wallet
+      console.log('🔍 Consultando balance para Smart Wallet:', wallet.address);
+      console.log('🔍 Chain:', wallet.chain);
 
-      console.log('🔍 Consultando balance para wallet:', wallet.address);
-      console.log('🔍 Es dirección Stellar válida?', isStellarAddress);
+      // Get balance using Crossmint SDK (works for Smart Wallets)
+      // Note: balances() method doesn't accept token list for Stellar
+      // It returns all balances automatically
+      const balances = await wallet.balances() as any;
+      console.log('📊 Balances from Crossmint:', balances);
 
-      if (!isStellarAddress) {
-        console.error('❌ ERROR: Wallet address NO es de Stellar');
-        console.error('❌ Address recibida:', wallet.address);
-        console.error('❌ Longitud:', wallet.address.length, '(debe ser 56)');
-        console.error('❌ Primer carácter:', wallet.address[0], '(debe ser "G")');
-        console.error('');
-        console.error('🔧 SOLUCIÓN: Crossmint creó una wallet de otra blockchain (Ethereum/Solana)');
-        console.error('🔧 Verificá que NEXT_PUBLIC_CHAIN=stellar-testnet en apps/web/.env.local');
-        console.error('🔧 Verificá que apiKey de Crossmint esté configurado para Stellar');
+      // Try to get ARU balance, fallback to native token (XLM)
+      let aruUnitsFromChain = 0;
 
-        setAruUnits(0);
-        setCurrentCER(0);
-        setPesoValue(0);
-        return;
+      // Check if ARU token exists in the balances
+      if (balances.aru) {
+        aruUnitsFromChain = parseFloat(balances.aru.amount || '0');
+        console.log('📊 ARU Balance found:', aruUnitsFromChain);
+      } else if (balances.nativeToken) {
+        // Fallback to XLM for demo purposes
+        aruUnitsFromChain = parseFloat(balances.nativeToken.amount || '0');
+        console.log('📊 Using XLM as placeholder:', aruUnitsFromChain);
+      } else {
+        console.log('📊 No balance found, using 0');
       }
-
-      // PASO 1: Obtener balance ARU desde blockchain (unidades)
-      const balanceResponse = await fetch('/api/wallet/balance', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          publicKey: wallet?.address,
-          assetCode: 'ARU',
-        }),
-      });
-
-      if (!balanceResponse.ok) {
-        throw new Error(`Balance API error: ${balanceResponse.status}`);
-      }
-
-      const balanceData = await balanceResponse.json();
-      console.log('📊 Balance response:', balanceData);
-
-      const aruUnitsFromChain = parseFloat(balanceData.balance || '0');
 
       setAruUnits(aruUnitsFromChain);
 

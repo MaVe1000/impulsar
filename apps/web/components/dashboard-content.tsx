@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
+import { useAuth } from "@crossmint/client-sdk-react-ui"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { ArrowUpRight, ArrowDownLeft, TrendingUp, Wallet, LogOut, Zap } from "lucide-react"
@@ -9,7 +10,7 @@ import Image from "next/image"
 import { BalanceDisplay } from "@/components/BalanceDisplay"
 
 interface WalletData {
-  pulsBalance: number
+  aruBalance: number
   arsBalance: number
   dailyYield: number
   totalEarned: number
@@ -18,9 +19,10 @@ interface WalletData {
 
 export function DashboardContent() {
   const router = useRouter()
+  const { logout } = useAuth()
   const [user, setUser] = useState<any>(null)
   const [walletData, setWalletData] = useState<WalletData>({
-    pulsBalance: 15420.5,
+    aruBalance: 15420.5,
     arsBalance: 0,
     dailyYield: 0.85,
     totalEarned: 1240.3,
@@ -33,25 +35,50 @@ export function DashboardContent() {
       router.push("/")
       return
     }
-    setUser(JSON.parse(userData))
+    const userObj = JSON.parse(userData)
+    setUser(userObj)
 
-    // Load wallet data
-    const savedWallet = localStorage.getItem("impulsAR_wallet")
-    if (savedWallet) {
-      setWalletData(JSON.parse(savedWallet))
+    // Load wallet data for THIS specific user
+    const walletsStr = localStorage.getItem("impulsAR_wallets")
+    if (walletsStr) {
+      const allWallets = JSON.parse(walletsStr)
+      const userWallet = allWallets[userObj.email]
+
+      if (userWallet) {
+        setWalletData(userWallet)
+        console.log("📂 Loaded wallet for user:", userObj.email, userWallet)
+      } else {
+        console.log("⚠️ No wallet found for user:", userObj.email)
+      }
+    } else {
+      // Fallback to old single-wallet format for backwards compatibility
+      const savedWallet = localStorage.getItem("impulsAR_wallet")
+      if (savedWallet) {
+        setWalletData(JSON.parse(savedWallet))
+      }
     }
 
     // Simulate daily yield increase
     const interval = setInterval(() => {
       setWalletData((prev) => {
-        const yieldAmount = (prev.pulsBalance * (prev.dailyYield / 100)) / 86400 // per second
+        const yieldAmount = (prev.aruBalance * (prev.dailyYield / 100)) / 86400 // per second
         const newData = {
           ...prev,
-          pulsBalance: prev.pulsBalance + yieldAmount,
+          aruBalance: prev.aruBalance + yieldAmount,
           totalEarned: prev.totalEarned + yieldAmount,
           lastUpdate: new Date().toISOString(),
         }
+
+        // Update both single wallet and multi-user wallet storage
         localStorage.setItem("impulsAR_wallet", JSON.stringify(newData))
+
+        const walletsStr = localStorage.getItem("impulsAR_wallets")
+        if (walletsStr) {
+          const allWallets = JSON.parse(walletsStr)
+          allWallets[userObj.email] = newData
+          localStorage.setItem("impulsAR_wallets", JSON.stringify(allWallets))
+        }
+
         return newData
       })
     }, 1000)
@@ -59,12 +86,32 @@ export function DashboardContent() {
     return () => clearInterval(interval)
   }, [router])
 
-  const handleLogout = () => {
-    localStorage.removeItem("impulsAR_user")
-    router.push("/")
+  const handleLogout = async () => {
+    try {
+      console.log("🚪 Logging out user:", user?.email)
+
+      // Logout from Crossmint
+      await logout()
+
+      // ONLY clear current session data
+      // DO NOT delete impulsAR_wallets - this preserves all users' wallets
+      localStorage.removeItem("impulsAR_user")
+      localStorage.removeItem("impulsAR_wallet")
+
+      console.log("✅ Session cleared, wallet data preserved for future logins")
+
+      // Redirect to login
+      router.push("/")
+    } catch (error) {
+      console.error("❌ Error during logout:", error)
+      // Even if Crossmint logout fails, clear session data and redirect
+      localStorage.removeItem("impulsAR_user")
+      localStorage.removeItem("impulsAR_wallet")
+      router.push("/")
+    }
   }
 
-  const formatPULS = (amount: number) => {
+  const formatARU = (amount: number) => {
     return new Intl.NumberFormat("es-AR", {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
@@ -130,7 +177,7 @@ export function DashboardContent() {
           <Button size="lg" className="h-auto py-6 flex-col gap-2" onClick={() => router.push("/convert")}>
             <ArrowUpRight className="w-6 h-6" />
             <span>Convertir</span>
-            <span className="text-xs opacity-80">PULS a ARS</span>
+            <span className="text-xs opacity-80">ARU a ARS</span>
           </Button>
           <Button
             size="lg"
@@ -150,11 +197,11 @@ export function DashboardContent() {
             <CardHeader className="pb-3">
               <CardDescription>Rendimiento Total</CardDescription>
               <CardTitle className="text-2xl">
-                <span className="text-green-500">+{formatPULS(walletData.totalEarned)}</span>
+                <span className="text-green-500">+{formatARU(walletData.totalEarned)}</span>
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-xs text-muted-foreground">PULS acumulados</p>
+              <p className="text-xs text-muted-foreground">ARU acumulados</p>
             </CardContent>
           </Card>
           <Card className="border-border/40">
@@ -182,14 +229,14 @@ export function DashboardContent() {
                 <p className="font-medium">Asignación Universal por Hijo</p>
                 <p className="text-sm text-muted-foreground">Acreditado el 15/12/2024</p>
               </div>
-              <p className="font-bold text-green-500">+8,500 PULS</p>
+              <p className="font-bold text-green-500">+8,500 ARU</p>
             </div>
             <div className="flex items-center justify-between p-3 rounded-lg bg-muted/50">
               <div>
                 <p className="font-medium">Programa ImpulsAR Comunitario</p>
                 <p className="text-sm text-muted-foreground">Acreditado el 10/12/2024</p>
               </div>
-              <p className="font-bold text-green-500">+5,000 PULS</p>
+              <p className="font-bold text-green-500">+5,000 ARU</p>
             </div>
           </CardContent>
         </Card>
@@ -200,9 +247,9 @@ export function DashboardContent() {
             <div className="flex gap-3">
               <Zap className="w-5 h-5 text-cyan-400 shrink-0 mt-0.5" />
               <div className="space-y-1">
-                <p className="font-medium text-sm">¿Qué es PULS?</p>
+                <p className="font-medium text-sm">¿Qué es ARU?</p>
                 <p className="text-sm text-muted-foreground">
-                  PULS es la criptomoneda del programa ImpulsAR. Genera rendimientos diarios automáticamente y podés
+                  ARU es la criptomoneda del programa ImpulsAR indexada al CER. Genera rendimientos diarios automáticamente y podés
                   convertirla a pesos argentinos en cualquier momento.
                 </p>
               </div>

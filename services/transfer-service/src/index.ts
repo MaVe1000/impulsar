@@ -8,6 +8,7 @@ import cors from 'cors';
 import { validateTransferEnv } from '@impulsar/config';
 import walletRoutes from './routes/wallet.js';
 import cerRoutes from './routes/cer.js';
+import crossmintWalletRoutes from './routes/crossmint-wallet.js';
 
 const rootEnvPath = resolve(process.cwd(), '../../.env');
 const localEnvPath = resolve(process.cwd(), '.env');
@@ -41,6 +42,9 @@ app.get('/health', (req, res) => {
 // ARU-related routes (wallet balance, CER)
 app.use('/api/wallet', walletRoutes);
 app.use('/api/cer', cerRoutes);
+
+// Crossmint wallet routes (create/get Stellar wallets)
+app.use('/api/crossmint', crossmintWalletRoutes);
 
 // Transfer domain routes
 app.get('/api/transfers', (req, res) => {
