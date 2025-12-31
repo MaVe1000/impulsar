@@ -9,16 +9,16 @@
 
 **Built for Ideatón Fin de Año – Powered by Stellar Chile** 🏆
 
-### 💡 "4.2 million Argentines lose $432M annually to inflation. ImpulsAr stops that—automatically."
+### 💡 "Digital public infrastructure for efficient social protection. Government saves $185M USD annually while protecting 9M citizens from inflation."
 
 [🎬 Watch Demo Video](#) | [🌐 Try Live App](https://impulsar-web.vercel.app) | [📊 View Pitch](#) | [🐦 Follow on X](https://x.com/ImpulsAr_ARG)
 ---
 
 ## 🌟 What is ImpulsAr?
 
-ImpulsAr is revolutionary blockchain infrastructure that transforms how the Argentine government distributes social transfers (AUH, Alimentar, Progresar). Built on Stellar, we deliver instant settlement, radical efficiency, and—most importantly—**protect citizens from inflation** instead of letting intermediaries capture those returns.
+ImpulsAr is B2G blockchain infrastructure that modernizes how governments distribute social transfers. Built on Stellar, we deliver instant settlement, 99.97% cost reduction, and automatic inflation protection for beneficiaries—eliminating the inefficiencies of traditional banking systems.
 
-### 💡 "Your social benefit retains its value."
+### 💡 "Digital infrastructure for efficient social protection."
 
 ---
 
@@ -70,6 +70,19 @@ Instant blockchain distribution (~5 seconds)
        ↓
 Citizen's balance grows with inflation automatically
 ```
+
+### 🏛️ Business Model: B2G (Business to Government)
+
+**How it's financed:**
+The State pays a minimal monthly fee per active beneficiary, making the service **100% free for citizens**.
+
+**Smart investment:**
+- Government pays: $5.4M USD/year (SaaS licensing)
+- Government saves: $185M USD/year (banking fees eliminated)
+- **ROI: 34:1** - For every $1 invested, $34 saved
+
+**The system pays for itself. It's not spending—it's budgetary efficiency.**
+
 
 ### 🛡️ Inflation Protection, Not Speculation
 
@@ -138,6 +151,10 @@ Banking intermediaries charge $185M/year for distribution, with 3-5 day delays.
 - Faster distribution: Weeks → Hours
 - Better transparency: Zero → Total
 
+**Business Impact:**
+- Government invests: $5.4M USD/year (licensing)
+- Government saves: $185M USD/year (banking elimination)
+- Citizens pay: $0 (100% free service)
 ---
 
 ## 🏗️ How It Works
@@ -183,7 +200,7 @@ CER (Coeficiente de Estabilización de Referencia) is an official daily index pu
 1. **María receives payment:** 100,000 ARU on Day 1
    - System records internally: 100,000 units at CER 1,000
    
-2. **Inflation happens:** 30 days pass, CER rises to 1,050 (5% inflation)
+2. **Inflation happens:** 30 days pass, CER rises to 1,050 (5-14% inflation)
 
 3. **María's balance auto-adjusts:**
    - Internal units: Still 100,000 (unchanged)
@@ -601,7 +618,21 @@ Both systems transfer value appreciation to citizens instead of intermediaries. 
 - Efficiency savings help offset CER costs
 - Focalizes inflation protection on most vulnerable
 
+**Economic Model:**
+- Monthly licensing fee: $50 ARS/beneficiary ($5.4M USD/year for 9M users)
+- Setup + support: $600K USD/year
+- Revenue share with cash-out providers: $650K USD/year
+- **Total cost: $6.65M USD/year vs $185M USD/year savings**
+- **Net government benefit: $178M USD/year + inflation protection for citizens**
+
+This isn't a social spending increase—it's infrastructure modernization with massive ROI.
+
 ### For Beneficiaries
+
+**Zero Cost for Citizens:**
+- ImpulsAr is **100% free** for beneficiaries
+- Government pays the infrastructure fee (B2G model)
+- No withdrawal fees, no maintenance fees, no hidden costs
 
 **Financial Protection:**
 - **Inflation shield:** Purchasing power maintained automatically
@@ -902,6 +933,16 @@ ImpulsAr is **fully open source** to enable:
 - **Live Demo**: [impulsar-web.vercel.app](https://impulsar-web.vercel.app)
 - **X (Twitter)**: [@ImpulsAr_ARG](https://x.com/ImpulsAr_ARG)
 
+### Business Model Summary
+
+**B2G Infrastructure Provider**
+- Government licensing: $50 ARS/beneficiary/month
+- 100% free for citizens
+- ROI 34:1 for the State
+- Revenue: $6.65M USD/year | Savings: $185M USD/year
+
+**Not a social program—it's infrastructure modernization.**
+
 ### For Partnership Inquiries
 
 **Stellar Foundation:**
@@ -952,12 +993,12 @@ If you believe in transparent, efficient government infrastructure that protects
 
 ---
 
-**Built with 💙 for 4.2 million Argentines who deserve financial dignity**
+**Built with 💙 for governments committed to efficient, transparent social protection**
 
-*Every citizen deserves protection from inflation. ImpulsAr makes it possible.*
+*Modernizing public infrastructure to protect 9M citizens from inflation—at 34:1 ROI.*
 
 ---
 
-**ImpulsAr: Your social benefit retains its value.** 
+**ImpulsAr:  Digital infrastructure for efficient social protection.** 
 
 🌐 [impulsar-web.vercel.app](https://impulsar-web.vercel.app) | 🐦 [@ImpulsAr_ARG](https://x.com/ImpulsAr_ARG) | 💻 [GitHub](https://github.com/FabSignal/impulsar)

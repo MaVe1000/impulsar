@@ -127,136 +127,149 @@ export function DashboardContent() {
 
   if (!user) return null
 
-  return (
-    <div className="min-h-screen pb-20">
+return (
+  <div className="min-h-screen bg-slate-100 flex justify-center pb-16">
+    <div className="w-full max-w-[600px]">
+      
       {/* Header */}
-      <div className="border-b border-border/40 bg-card/50 backdrop-blur-sm sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="relative w-10 h-10">
-                <Image src="/images/img-20251227-120843-641.jpg" alt="ImpulsAR" fill className="object-contain" />
-              </div>
-              <div>
-                <h1 className="font-bold text-lg">ImpulsAR</h1>
-                <p className="text-xs text-muted-foreground">{user.email}</p>
-              </div>
+      <header className="sticky top-0 z-10 bg-white border-b">
+        <div className="px-4 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <Image
+              src="/images/iconoLogo.png"
+              alt="ImpulsAR"
+              width={36}
+              height={36}
+              className="object-contain"
+            />
+            <div>
+              <h1 className="text-lg font-semibold text-blue-900">
+                ImpulsAR
+              </h1>
+              <p className="text-xs text-slate-500 truncate max-w-[200px]">
+                {user.email}
+              </p>
             </div>
-            <Button variant="ghost" size="icon" onClick={handleLogout}>
-              <LogOut className="w-4 h-4" />
-            </Button>
           </div>
+
+          <Button variant="ghost" size="icon" onClick={handleLogout}>
+            <LogOut className="w-4 h-4 text-slate-500" />
+          </Button>
         </div>
-      </div>
+      </header>
 
-      {/* Harcoded Balance Card */}
-      {/* <div className="max-w-7xl mx-auto px-4 py-6 space-y-6">        
-        <Card className="border-border/40 bg-gradient-to-br from-card to-card/50">
-          <CardHeader>
-            <CardDescription>Balance Total</CardDescription>
-            <CardTitle className="text-4xl font-bold flex items-baseline gap-2">
-              <Zap className="w-8 h-8 text-cyan-400" />
-              {formatPULS(walletData.pulsBalance)}
-              <span className="text-2xl font-normal text-muted-foreground">PULS</span>
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center gap-2 text-sm">
-              <TrendingUp className="w-4 h-4 text-green-500" />
-              <span className="text-green-500 font-medium">+{walletData.dailyYield}% diario</span>
-              <span className="text-muted-foreground">≈ {formatARS(walletData.pulsBalance * 850)}</span>
-            </div>
-          </CardContent>
-        </Card> */}
-
-        {/* Balance Card - REAL DATA */}
+      {/* Content */}
+      <main className="px-4 py-6 space-y-6">
+        
+        {/* Balance */}
         <BalanceDisplay showCERDetails={false} />
 
-        {/* Quick Actions */}
-        <div className="grid grid-cols-2 gap-4">
-          <Button size="lg" className="h-auto py-6 flex-col gap-2" onClick={() => router.push("/convert")}>
-            <ArrowUpRight className="w-6 h-6" />
-            <span>Convertir</span>
+        {/* Actions */}
+        <div className="grid grid-cols-2 gap-3">
+          <Button
+            className="h-20 flex flex-col gap-1 bg-blue-700 hover:bg-blue-800 hover:scale-[1.02] transition-transform hover:text-stone-100"
+            onClick={() => router.push("/convert")}
+          >
+            <ArrowUpRight className="w-5 h-5" />
+            <span className="text-sm font-medium">Convertir</span>
             <span className="text-xs opacity-80">ARU a ARS</span>
           </Button>
+
           <Button
-            size="lg"
             variant="outline"
-            className="h-auto py-6 flex-col gap-2 bg-transparent"
+            className="h-20 flex flex-col gap-1 border-blue-700 text-blue-700 hover:bg-blue-50 hover:scale-[1.02] transition-transform hover:text-blue-900"
             onClick={() => router.push("/transfer")}
           >
-            <ArrowDownLeft className="w-6 h-6" />
-            <span>Retirar</span>
+            <ArrowDownLeft className="w-5 h-5" />
+            <span className="text-sm font-medium">Retirar</span>
             <span className="text-xs opacity-80">A tu cuenta</span>
           </Button>
         </div>
 
         {/* Stats */}
         <div className="grid grid-cols-2 gap-4">
-          <Card className="border-border/40">
-            <CardHeader className="pb-3">
-              <CardDescription>Rendimiento Total</CardDescription>
-              <CardTitle className="text-2xl">
-                <span className="text-green-500">+{formatARU(walletData.totalEarned)}</span>
+          <Card>
+            <CardHeader className="pb-2">
+              <CardDescription>Rendimiento total</CardDescription>
+              <CardTitle className="text-xl text-cyan-300">
+                +{formatARU(walletData.totalEarned)} ARU
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-xs text-muted-foreground">ARU acumulados</p>
+              <p className="text-sm text-slate-300">ARU acumulados</p>
             </CardContent>
           </Card>
-          <Card className="border-border/40">
-            <CardHeader className="pb-3">
-              <CardDescription>Saldo en Pesos</CardDescription>
-              <CardTitle className="text-2xl">{formatARS(walletData.arsBalance)}</CardTitle>
+
+          <Card>
+            <CardHeader className="pb-2">
+              <CardDescription>Saldo en pesos</CardDescription>
+              <CardTitle className="text-xl">
+                {formatARS(walletData.arsBalance)}
+              </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-xs text-muted-foreground">Listo para retirar</p>
+              <p className="text-sm text-slate-300">Disponible para retirar</p>
             </CardContent>
           </Card>
         </div>
 
         {/* Government Benefits */}
-        <Card className="border-border/40">
+        <Card>
           <CardHeader>
-            <CardTitle className="text-lg flex items-center gap-2">
-              <Wallet className="w-5 h-5" />
+            <CardTitle className="flex items-center gap-2 text-blue-50">
+              <Wallet className="w-5 h-5 text-blue-400" />
               Beneficios del Gobierno
             </CardTitle>
           </CardHeader>
+
           <CardContent className="space-y-3">
-            <div className="flex items-center justify-between p-3 rounded-lg bg-muted/50">
+            <div className="flex justify-between items-center rounded-md border p-3">
               <div>
-                <p className="font-medium">Asignación Universal por Hijo</p>
-                <p className="text-sm text-muted-foreground">Acreditado el 15/12/2024</p>
+                <p className="text-sm font-medium">
+                  Asignación Universal por Hijo
+                </p>
+                <p className="text-xs text-slate-400">
+                  Acreditado el 15/12/2024
+                </p>
               </div>
-              <p className="font-bold text-green-500">+8,500 ARU</p>
+              <span className="text-sm font-semibold text-cyan-300">
+                +8.500 ARU
+              </span>
             </div>
-            <div className="flex items-center justify-between p-3 rounded-lg bg-muted/50">
+
+            <div className="flex justify-between items-center rounded-md border p-3">
               <div>
-                <p className="font-medium">Programa ImpulsAR Comunitario</p>
-                <p className="text-sm text-muted-foreground">Acreditado el 10/12/2024</p>
+                <p className="text-sm font-medium">
+                  Programa ImpulsAR Comunitario
+                </p>
+                <p className="text-xs text-slate-400">
+                  Acreditado el 10/12/2024
+                </p>
               </div>
-              <p className="font-bold text-green-500">+5,000 ARU</p>
+              <span className="text-sm font-semibold text-cyan-300">
+                +5.000 ARU
+              </span>
             </div>
           </CardContent>
         </Card>
 
-        {/* Info Banner */}
-        <Card className="border-cyan-500/20 bg-cyan-500/5">
-          <CardContent className="pt-6">
-            <div className="flex gap-3">
-              <Zap className="w-5 h-5 text-cyan-400 shrink-0 mt-0.5" />
-              <div className="space-y-1">
-                <p className="font-medium text-sm">¿Qué es ARU?</p>
-                <p className="text-sm text-muted-foreground">
-                  ARU es la criptomoneda del programa ImpulsAR indexada al CER. Genera rendimientos diarios automáticamente y podés
-                  convertirla a pesos argentinos en cualquier momento.
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    //</div>
-  )
+        {/* Info */}
+        <div className="rounded-md bg-blue-50 border border-blue-200 p-4 flex gap-3">
+          <Zap className="w-5 h-5 text-blue-700 mt-0.5" />
+          <div>
+            <p className="text-sm font-medium text-blue-900">
+              ¿Qué es ARU?
+            </p>
+            <p className="text-sm text-blue-800/80">
+              ARU es la criptomoneda del programa ImpulsAR indexada al CER.
+              Genera rendimientos diarios y puede convertirse a pesos
+              argentinos en cualquier momento.
+            </p>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+)
 }
