@@ -139,8 +139,8 @@ export function ConvertContent() {
           </div>
         </div>
       </header>
-      <div className="text-center mt-6 mb-4">
-        <h2 className="text-2xl font-semibold text-blue-900">Convertir ARU</h2>
+      <div className="text-center mt-6 mb-2">
+        <h2 className="text-xl font-semibold text-blue-900">Convertir ARU</h2>
       </div>
       <div className="max-w-2xl mx-auto px-4 py-6 space-y-6">
         {/* Balance Card */}
@@ -178,7 +178,7 @@ export function ConvertContent() {
                 />
                 <div className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
                   <Zap className="w-4 h-4 text-cyan-400" />
-                  <span className="font-medium">PULS</span>
+                  <span className="font-medium">ARU</span>
                 </div>
               </div>
             </div>

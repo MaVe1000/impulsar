@@ -167,11 +167,11 @@ export function TransferContent() {
               <Tabs value={activeTab} onValueChange={setActiveTab}>
                 <TabsList className="grid w-full grid-cols-2">
                   <TabsTrigger value="bank" className="gap-2">
-                    <Building2 className="w-4 h-4" />
+                    <Building2 className="w-4 h-4 text-blue-900" />
                     Transferencia
                   </TabsTrigger>
                   <TabsTrigger value="pagofacil" className="gap-2">
-                    <Banknote className="w-4 h-4" />
+                    <Banknote className="w-4 h-4 text-blue-900" />
                     Pago Fácil
                   </TabsTrigger>
                 </TabsList>
