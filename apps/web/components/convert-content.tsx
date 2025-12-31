@@ -1,81 +1,90 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { ArrowLeft, ArrowDownUp, Zap, CheckCircle2 } from "lucide-react"
-import Image from "next/image"
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { ArrowLeft, ArrowDownUp, Zap, CheckCircle2 } from "lucide-react";
+import Image from "next/image";
 
 export function ConvertContent() {
-  const router = useRouter()
-  const [pulsAmount, setPulsAmount] = useState("")
-  const [arsAmount, setArsAmount] = useState("")
-  const [exchangeRate] = useState(850) // 1 PULS = 850 ARS
-  const [isConverting, setIsConverting] = useState(false)
-  const [showSuccess, setShowSuccess] = useState(false)
-  const [walletData, setWalletData] = useState({ pulsBalance: 0, arsBalance: 0 })
+  const router = useRouter();
+  const [pulsAmount, setPulsAmount] = useState("");
+  const [arsAmount, setArsAmount] = useState("");
+  const [exchangeRate] = useState(850); // 1 PULS = 850 ARS
+  const [isConverting, setIsConverting] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [walletData, setWalletData] = useState({
+    pulsBalance: 0,
+    arsBalance: 0,
+  });
 
   useEffect(() => {
-    const userData = localStorage.getItem("impulsAR_user")
+    const userData = localStorage.getItem("impulsAR_user");
     if (!userData) {
-      router.push("/")
-      return
+      router.push("/");
+      return;
     }
 
-    const savedWallet = localStorage.getItem("impulsAR_wallet")
+    const savedWallet = localStorage.getItem("impulsAR_wallet");
     if (savedWallet) {
-      setWalletData(JSON.parse(savedWallet))
+      setWalletData(JSON.parse(savedWallet));
     }
-  }, [router])
+  }, [router]);
 
   const handlePulsChange = (value: string) => {
-    setPulsAmount(value)
-    const numValue = Number.parseFloat(value) || 0
-    setArsAmount((numValue * exchangeRate).toFixed(2))
-  }
+    setPulsAmount(value);
+    const numValue = Number.parseFloat(value) || 0;
+    setArsAmount((numValue * exchangeRate).toFixed(2));
+  };
 
   const handleArsChange = (value: string) => {
-    setArsAmount(value)
-    const numValue = Number.parseFloat(value) || 0
-    setPulsAmount((numValue / exchangeRate).toFixed(2))
-  }
+    setArsAmount(value);
+    const numValue = Number.parseFloat(value) || 0;
+    setPulsAmount((numValue / exchangeRate).toFixed(2));
+  };
 
   const handleConvert = async () => {
-    const puls = Number.parseFloat(pulsAmount) || 0
-    const ars = Number.parseFloat(arsAmount) || 0
+    const puls = Number.parseFloat(pulsAmount) || 0;
+    const ars = Number.parseFloat(arsAmount) || 0;
 
-    if (puls <= 0 || puls > walletData.pulsBalance) return
+    if (puls <= 0 || puls > walletData.pulsBalance) return;
 
-    setIsConverting(true)
+    setIsConverting(true);
 
     setTimeout(() => {
-      const savedWallet = localStorage.getItem("impulsAR_wallet")
+      const savedWallet = localStorage.getItem("impulsAR_wallet");
       if (savedWallet) {
-        const wallet = JSON.parse(savedWallet)
-        wallet.pulsBalance -= puls
-        wallet.arsBalance += ars
-        localStorage.setItem("impulsAR_wallet", JSON.stringify(wallet))
-        setWalletData(wallet)
+        const wallet = JSON.parse(savedWallet);
+        wallet.pulsBalance -= puls;
+        wallet.arsBalance += ars;
+        localStorage.setItem("impulsAR_wallet", JSON.stringify(wallet));
+        setWalletData(wallet);
       }
 
-      setIsConverting(false)
-      setShowSuccess(true)
+      setIsConverting(false);
+      setShowSuccess(true);
 
       setTimeout(() => {
-        router.push("/dashboard")
-      }, 2000)
-    }, 1500)
-  }
+        router.push("/dashboard");
+      }, 2000);
+    }, 1500);
+  };
 
   const formatNumber = (num: number) => {
     return new Intl.NumberFormat("es-AR", {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
-    }).format(num)
-  }
+    }).format(num);
+  };
 
   if (showSuccess) {
     return (
@@ -90,34 +99,49 @@ export function ConvertContent() {
             <div>
               <h2 className="text-2xl font-bold">¡Conversión Exitosa!</h2>
               <p className="text-muted-foreground mt-2">
-                Convertiste {pulsAmount} PULS a ${arsAmount} ARS
+                Convertiste {pulsAmount} ARU a ${arsAmount} ARS
               </p>
             </div>
           </CardContent>
         </Card>
       </div>
-    )
+    );
   }
 
   return (
     <div className="min-h-screen pb-20">
       {/* Header */}
-      <div className="border-b border-border/40 bg-card/50 backdrop-blur-sm sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-4 py-4">
+      <header className="sticky top-0 z-10 bg-white border-b">
+        <div className="max-w-[600px] mx-auto px-4 py-3">
           <div className="flex items-center gap-3">
-            <Button variant="ghost" size="icon" onClick={() => router.push("/dashboard")}>
-              <ArrowLeft className="w-5 h-5" />
+            {/* Back */}
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => router.push("/dashboard")}
+            >
+              <ArrowLeft className="w-5 h-5 text-slate-600" />
             </Button>
-            <div className="flex items-center gap-3">
-              <div className="relative w-8 h-8">
-                <Image src="/images/img-20251227-120843-641.jpg" alt="ImpulsAR" fill className="object-contain" />
-              </div>
-              <h1 className="font-bold text-lg">Convertir PULS</h1>
+
+            {/* Brand */}
+            <div className="flex items-center gap-2">
+              <Image
+                src="/images/iconoLogo.png"
+                alt="ImpulsAR"
+                width={32}
+                height={32}
+                className="object-contain"
+              />
+              <span className="text-base font-semibold text-blue-900">
+                ImpulsAR
+              </span>
             </div>
           </div>
         </div>
+      </header>
+      <div className="text-center mt-6 mb-4">
+        <h2 className="text-2xl font-semibold text-blue-900">Convertir ARU</h2>
       </div>
-
       <div className="max-w-2xl mx-auto px-4 py-6 space-y-6">
         {/* Balance Card */}
         <Card className="border-border/40">
@@ -125,7 +149,7 @@ export function ConvertContent() {
             <CardDescription>Balance Disponible</CardDescription>
             <CardTitle className="text-2xl flex items-center gap-2">
               <Zap className="w-6 h-6 text-cyan-400" />
-              {formatNumber(walletData.pulsBalance)} PULS
+              {formatNumber(walletData.pulsBalance)} ARU
             </CardTitle>
           </CardHeader>
         </Card>
@@ -134,12 +158,14 @@ export function ConvertContent() {
         <Card className="border-border/40">
           <CardHeader>
             <CardTitle>Convertir a Pesos Argentinos</CardTitle>
-            <CardDescription>Tipo de cambio: 1 PULS = ${exchangeRate} ARS</CardDescription>
+            <CardDescription>
+              Tipo de cambio: 1 ARU = ${exchangeRate} ARS
+            </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
             {/* From Amount */}
             <div className="space-y-2">
-              <Label htmlFor="puls">Desde (PULS)</Label>
+              <Label htmlFor="puls">Desde (ARU)</Label>
               <div className="relative">
                 <Input
                   id="puls"
@@ -206,7 +232,9 @@ export function ConvertContent() {
             </Button>
 
             {Number.parseFloat(pulsAmount) > walletData.pulsBalance && (
-              <p className="text-sm text-destructive text-center">Saldo insuficiente</p>
+              <p className="text-sm text-destructive text-center">
+                Saldo insuficiente
+              </p>
             )}
           </CardContent>
         </Card>
@@ -217,7 +245,9 @@ export function ConvertContent() {
             <div className="flex gap-3">
               <Zap className="w-5 h-5 text-cyan-400 shrink-0 mt-0.5" />
               <div className="space-y-2 text-sm">
-                <p className="font-medium">Conversión instantánea</p>
+                <p className="font-medium font-semibold text-blue-900">
+                  Conversión instantánea
+                </p>
                 <ul className="space-y-1 text-muted-foreground">
                   <li>• Sin comisiones ocultas</li>
                   <li>• Tipo de cambio actualizado</li>
@@ -229,5 +259,5 @@ export function ConvertContent() {
         </Card>
       </div>
     </div>
-  )
+  );
 }
