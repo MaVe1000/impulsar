@@ -22,7 +22,7 @@ export function TransferContent() {
   const [cbu, setCbu] = useState("");
   const [isTransferring, setIsTransferring] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
-  const [walletData, setWalletData] = useState({ arsBalance: 0 });
+  const [walletData, setWalletData] = useState({ arsBalance: 100000.55 });
   const [activeTab, setActiveTab] = useState("bank");
 
   useEffect(() => {

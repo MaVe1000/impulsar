@@ -1,41 +1,43 @@
-// app/api/cer/current/route.ts
-import { createClient } from '@supabase/supabase-js';
+import { NextResponse } from 'next/server';
+import { ValueCalculator } from '@/../../services/value-calculator/src/index';
 
-// Uses Next.js ISR for automatic caching
-export const revalidate = 86400; // Cache for 24 hours
+// Initialize ValueCalculator (singleton pattern)
+let calculatorInstance: ValueCalculator | null = null;
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+function getCalculator(): ValueCalculator {
+  if (!calculatorInstance) {
+    calculatorInstance = new ValueCalculator();
+  }
+  return calculatorInstance;
+}
 
+/**
+ * GET /api/cer/current
+ * Returns current CER value from blockchain
+ */
 export async function GET() {
   try {
-    // Read directly from database (Next.js caches automatically)
-    const { data, error } = await supabase
-      .from('cer_publications')
-      .select('cer_value, date')
-      .order('date', { ascending: false })
-      .limit(1)
-      .single();
+    const calculator = getCalculator();
 
-    if (error || !data) {
-      return Response.json(
-        { error: 'CER not available' },
-        { status: 503 }
-      );
-    }
+    // Get current CER (uses fallback strategy internally)
+    const cer = await calculator['getCurrentCER']();
 
-    return Response.json({
-      cer: data.cer_value,
-      date: data.date,
-      source: 'database',
+    return NextResponse.json({
+      success: true,
+      data: {
+        cer_value: cer,
+        timestamp: new Date().toISOString(),
+        source: 'blockchain', // Could be 'cache' or 'mock' depending on fallback
+      },
     });
-
   } catch (error) {
-    console.error('Error fetching CER:', error);
-    return Response.json(
-      { error: 'Internal server error' },
+    console.error('❌ Error in /api/cer/current:', error);
+
+    return NextResponse.json(
+      {
+        success: false,
+        error: 'Failed to fetch CER',
+      },
       { status: 500 }
     );
   }

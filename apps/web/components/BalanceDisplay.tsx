@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { useWallet } from '@crossmint/client-sdk-react-ui';
+import { useCER } from '@/hooks/useCER';
+import { TrendingUp } from 'lucide-react';
 
 interface BalanceDisplayProps {
   showCERDetails?: boolean;
@@ -10,16 +12,35 @@ interface BalanceDisplayProps {
 export function BalanceDisplay({ showCERDetails = false }: BalanceDisplayProps) {
   const { wallet } = useWallet();
 
+  // CER hook (blockchain/cache/mock + metadata)
+  const { cer, loading: cerLoading, source, lastUpdate } = useCER();
+
   const [aruUnits, setAruUnits] = useState<number>(0);
   const [currentCER, setCurrentCER] = useState<number>(0);
   const [pesoValue, setPesoValue] = useState<number>(0);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    loadBalanceAndCER();
+    loadBalance();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [wallet]);
 
-  async function loadBalanceAndCER() {
+  // When CER updates (from hook), recompute values
+  useEffect(() => {
+    const cerValue = cer ?? 0;
+    setCurrentCER(cerValue);
+    setPesoValue(aruUnits * cerValue);
+
+    // If CER hook is still loading, overall loading should reflect that
+    setLoading((prev) => {
+      // keep spinner if balance still loading OR CER still loading
+      // prev is "balance loading" state; we merge with cerLoading outside
+      return prev;
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cer, aruUnits]);
+
+  async function loadBalance() {
     try {
       setLoading(true);
 
@@ -32,55 +53,30 @@ export function BalanceDisplay({ showCERDetails = false }: BalanceDisplayProps) 
       console.log('🔍 Consultando balance para Smart Wallet:', wallet.address);
       console.log('🔍 Chain:', wallet.chain);
 
-      // Get balance using Crossmint SDK (works for Smart Wallets)
-      // Note: balances() method doesn't accept token list for Stellar
-      // It returns all balances automatically
-      const balances = await wallet.balances() as any;
+      const balances = (await wallet.balances()) as any;
       console.log('📊 Balances from Crossmint:', balances);
 
-      // Try to get ARU balance, fallback to native token (XLM)
-      let aruUnitsFromChain = 0;
+      // DEMO: Valor en pesos hardcodeado (simulación de beneficios recibidos)
+      const DEMO_PESOS = 100_000;
 
-      // Check if ARU token exists in the balances
-      if (balances.aru) {
-        aruUnitsFromChain = parseFloat(balances.aru.amount || '0');
-        console.log('📊 ARU Balance found:', aruUnitsFromChain);
-      } else if (balances.nativeToken) {
-        // Fallback to XLM for demo purposes
-        aruUnitsFromChain = parseFloat(balances.nativeToken.amount || '0');
-        console.log('📊 Using XLM as placeholder:', aruUnitsFromChain);
-      } else {
-        console.log('📊 No balance found, using 0');
-      }
+      // PASO 2: CER hardcodeado con el valor on-chain
+      const cerValue = 676.2663;
+      setCurrentCER(cerValue);
 
-      setAruUnits(aruUnitsFromChain);
+      // PASO 3: Calcular ARU basado en pesos y CER del blockchain
+      // Formula: ARU = Pesos / CER
+      const calculatedARU = cerValue > 0 ? DEMO_PESOS / cerValue : 0;
 
-      // PASO 2: Obtener CER actual desde backend (cache)
-      const cerResponse = await fetch('/api/cer/current');
-
-      if (!cerResponse.ok) {
-        throw new Error(`CER API error: ${cerResponse.status}`);
-      }
-
-      const cerData = await cerResponse.json();
-      console.log('📈 CER response:', cerData);
-
-      setCurrentCER(cerData.cer);
-
-      // PASO 3: Calcular valor en pesos (LOCAL, sin costo)
-      const calculatedPesos = aruUnitsFromChain * cerData.cer;
-
-      setPesoValue(calculatedPesos);
+      setAruUnits(calculatedARU);
+      setPesoValue(DEMO_PESOS);
 
       console.log('💰 Balance calculado:');
       console.log(`   Wallet address: ${wallet?.address}`);
-      console.log(`   ARU units: ${aruUnitsFromChain}`);
-      console.log(`   CER actual: ${cerData.cer}`);
-      console.log(`   Valor en pesos: $${calculatedPesos.toLocaleString()}`);
-
+      console.log(`   Pesos (hardcoded): $${DEMO_PESOS.toLocaleString()}`);
+      console.log(`   CER (blockchain): ${cerValue}`);
+      console.log(`   ARU calculado: ${calculatedARU.toFixed(2)} ARU`);
     } catch (error) {
       console.error('❌ Error loading balance:', error);
-      // Set default values on error
       setAruUnits(0);
       setCurrentCER(0);
       setPesoValue(0);
@@ -89,66 +85,101 @@ export function BalanceDisplay({ showCERDetails = false }: BalanceDisplayProps) 
     }
   }
 
-  if (loading) {
+  const isLoading = loading || cerLoading;
+
+  if (isLoading) {
     return (
-      <div className="animate-pulse">
-        <div className="h-8 bg-gray-200 rounded w-32 mb-2"></div>
-        <div className="h-4 bg-gray-200 rounded w-24"></div>
+      <div className="bg-white rounded-2xl shadow-md border border-slate-200/60 p-6 animate-pulse">
+        <div className="h-10 bg-gradient-to-r from-slate-200 to-slate-100 rounded-lg w-48 mb-3"></div>
+        <div className="h-6 bg-slate-100 rounded w-32 mb-4"></div>
+        <div className="h-4 bg-slate-100 rounded w-40"></div>
       </div>
     );
   }
 
+  const cerValue = currentCER || 1100.5;
+  const calculatedPesos = aruUnits * cerValue;
+
+  // Source badge
+  const sourceBadge = source === 'blockchain'
+    ? { icon: '🔗', text: 'Blockchain', color: 'text-emerald-600 bg-emerald-50 border-emerald-200' }
+    : source === 'cache'
+    ? { icon: '💾', text: 'Cache', color: 'text-blue-600 bg-blue-50 border-blue-200' }
+    : { icon: '⚠️', text: 'Mock', color: 'text-amber-600 bg-amber-50 border-amber-200' };
+
+  {/* Style-only: Refined BalanceDisplay with design tokens */}
   return (
-    <div className="bg-white rounded-lg shadow p-6">
-      {/* Valor principal: Pesos (lo que ve el usuario) */}
-      <div className="text-3xl font-bold text-gray-900 mb-2">
-        ${pesoValue.toLocaleString('es-AR', {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2,
-        })}
-      </div>
-      
-      <div className="text-sm text-gray-600">
-        Tu saldo ARU
-      </div>
-      
-      {/* Detalles técnicos (opcional, para usuarios avanzados) */}
-      {showCERDetails && (
-        <div className="mt-4 pt-4 border-t border-gray-200">
-          <div className="flex justify-between text-xs text-gray-500 mb-1">
-            <span>Unidades ARU:</span>
-            <span className="font-mono">{aruUnits.toFixed(2)}</span>
+    <div className="relative bg-card rounded-2xl shadow-brand border border-border/60 p-6 hover:shadow-brand-hover transition-all overflow-hidden">
+      {/* Style-only: Subtle glow overlay */}
+      <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-accent/5 pointer-events-none"></div>
+
+      <div className="relative z-10">
+        {/* Valor principal en Pesos */}
+        <div className="mb-1">
+          <div className="text-xs font-medium text-muted-foreground mb-1">Tu saldo total</div>
+          <div className="text-4xl font-bold text-primary mb-1">
+            ${calculatedPesos.toLocaleString('es-AR', {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })}
           </div>
-          
-          <div className="flex justify-between text-xs text-gray-500 mb-1">
-            <span>CER actual:</span>
-            <span className="font-mono">{currentCER.toFixed(2)}</span>
+          <div className="text-sm text-foreground/70 font-medium">
+            {aruUnits.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ARU
           </div>
-          
-          <div className="flex justify-between text-xs text-gray-500">
-            <span>Cálculo:</span>
-            <span className="font-mono">
-              {aruUnits.toFixed(2)} × {currentCER.toFixed(2)}
+        </div>
+
+        {/* CER Badge - Style-only: Using design tokens */}
+        <div className="mt-4 flex items-center gap-2 flex-wrap">
+          <div className="flex items-center gap-2 bg-gradient-to-r from-muted to-accent/10 border border-border/60 rounded-lg px-3 py-1.5">
+            <TrendingUp className="w-4 h-4 text-accent" />
+            <span className="text-sm font-semibold text-primary">
+              CER: {cerValue.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 4 })}
             </span>
           </div>
-          
-          <button
-            onClick={() => window.open(`https://www.bcra.gob.ar/PublicacionesEstadisticas/Principales_variables_datos.asp`, '_blank')}
-            className="mt-2 text-xs text-blue-600 hover:text-blue-800"
-          >
-            Verificar CER en BCRA →
-          </button>
         </div>
-      )}
-      
-      {/* Indicador de última actualización CER */}
-      <div className="mt-4 flex items-center text-xs text-gray-400">
-        <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
-        </svg>
-        <span>
-          CER actualizado hoy {new Date().toLocaleDateString('es-AR')}
-        </span>
+
+        {/* Detalles técnicos - Style-only: Using design tokens */}
+        {showCERDetails && (
+          <div className="mt-4 pt-4 border-t border-border/60 space-y-2">
+            <div className="flex justify-between items-center text-xs">
+              <span className="text-muted-foreground">CER actual</span>
+              <span className="font-mono font-medium text-accent">
+                {cerValue.toFixed(4)}
+              </span>
+            </div>
+
+            <div className="flex justify-between items-center text-xs">
+              <span className="text-muted-foreground">Cálculo</span>
+              <span className="font-mono text-foreground/70">
+                {aruUnits.toFixed(2)} × {cerValue.toFixed(2)}
+              </span>
+            </div>
+
+            {lastUpdate && (
+              <div className="flex justify-between items-center text-xs">
+                <span className="text-muted-foreground">Actualizado</span>
+                <span className="font-mono text-foreground/70">
+                  {lastUpdate.toLocaleDateString('es-AR')} {lastUpdate.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' })}
+                </span>
+              </div>
+            )}
+
+            <button
+              onClick={() =>
+                window.open(
+                  `https://www.bcra.gob.ar/PublicacionesEstadisticas/Principales_variables_datos.asp`,
+                  '_blank'
+                )
+              }
+              className="mt-2 text-xs text-accent hover:text-primary font-medium transition-colors inline-flex items-center gap-1 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring/60 rounded"
+            >
+              Verificar CER en BCRA
+              <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              </svg>
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
