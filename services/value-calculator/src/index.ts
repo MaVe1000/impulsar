@@ -77,7 +77,7 @@ export class ValueCalculator {
   /**
    * Gets CER from a specific date
    */
-  async getCERAtDate(date: string): Promise<number | null> {
+  async getCERAtDate(_date: string): Promise<number | null> {
     // TODO: Implement after doc 05 (CEROracle contract)
     // const snapshot = await this.cerOracle.getCERAtDate(date);
     // if (!snapshot) return null;

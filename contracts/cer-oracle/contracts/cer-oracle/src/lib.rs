@@ -1,16 +1,28 @@
 #![no_std]
-use soroban_sdk::{contract, contractimpl, contracttype, symbol_short, Address, Env, String, Symbol};
+use soroban_sdk::{
+    contract, contractimpl, contracttype, contracterror, symbol_short, vec,
+    Address, Env, String, Symbol
+};
 
 const ADMIN: Symbol = symbol_short!("admin");
 const LATEST_CER: Symbol = symbol_short!("cer");
+const ATTESTATION_MGR: Symbol = symbol_short!("att_mgr");  // ← NUEVO
 
 #[derive(Clone)]
 #[contracttype]
 pub struct CERSnapshot {
     pub date: String,
-    pub cer_value: i128,  // 6 decimales: 1050230000 = 1050.23 pesos
+    pub cer_value: i128,
     pub publisher: Address,
     pub timestamp: u64,
+}
+
+#[contracterror]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, PartialOrd, Ord)]
+#[repr(u32)]
+pub enum Error {
+    PublisherNotAttested = 1,
+    AlreadyInitialized = 2,
 }
 
 #[contract]
@@ -18,25 +30,50 @@ pub struct CEROracle;
 
 #[contractimpl]
 impl CEROracle {
-    /// Inicializa el contrato con un admin
-    pub fn initialize(env: Env, admin: Address) {
+    /// Inicializa el contrato con admin y AttestationManager contract
+    pub fn initialize(
+        env: Env,
+        admin: Address,
+        attestation_manager: Address,  // ← NUEVO
+    ) -> Result<(), Error> {
         if env.storage().instance().has(&ADMIN) {
-            panic!("Ya inicializado");
+            return Err(Error::AlreadyInitialized);
         }
+
         env.storage().instance().set(&ADMIN, &admin);
+        env.storage().instance().set(&ATTESTATION_MGR, &attestation_manager);
+        Ok(())
     }
 
-    /// Publica un nuevo valor de CER
-    /// @param date - Fecha en formato "YYYY-MM-DD"
-    /// @param cer_value - Valor CER con 6 decimales (ej: 1050230000 = 1050.23)
+    /// Publica un nuevo valor de CER (CON MULTI-SIG VALIDATION)
     pub fn publish_cer(
         env: Env,
         date: String,
         cer_value: i128,
         publisher: Address,
-    ) -> CERSnapshot {
+    ) -> Result<CERSnapshot, Error> {
         publisher.require_auth();
 
+        // Verificar attestation del publisher
+        let attestation_mgr: Address = env
+            .storage()
+            .instance()
+            .get(&ATTESTATION_MGR)
+            .unwrap();
+
+        // Call attestation manager contract (max 9 chars for symbol)
+        use soroban_sdk::IntoVal;
+        let is_attested: bool = env.invoke_contract(
+            &attestation_mgr,
+            &symbol_short!("is_attest"),
+            vec![&env, publisher.clone().into_val(&env)],
+        );
+
+        if !is_attested {
+            return Err(Error::PublisherNotAttested);
+        }
+
+        // Resto de la lógica (igual que antes)
         let snapshot = CERSnapshot {
             date: date.clone(),
             cer_value,
@@ -44,17 +81,13 @@ impl CEROracle {
             timestamp: env.ledger().timestamp(),
         };
 
-        // Guardar en persistent storage
         env.storage()
             .persistent()
             .set(&(symbol_short!("cer"), date.clone()), &snapshot);
 
-        // Actualizar "latest CER"
-        env.storage()
-            .instance()
-            .set(&LATEST_CER, &snapshot);
+        env.storage().instance().set(&LATEST_CER, &snapshot);
 
-        snapshot
+        Ok(snapshot)
     }
 
     /// Obtiene el CER más reciente

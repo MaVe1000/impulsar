@@ -56,7 +56,8 @@ impl AttestationManager {
     }
 
     /// Verifica si un usuario tiene attestation válida
-    pub fn is_attested(env: Env, user: Address) -> bool {
+    /// Renamed to is_attest (max 9 chars for Soroban symbol)
+    pub fn is_attest(env: Env, user: Address) -> bool {
         env.storage()
             .persistent()
             .has(&DataKey::Attestation(user))
