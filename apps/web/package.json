@@ -18,6 +18,7 @@
     "@impulsar/stellar-sdk": "*",
     "@impulsar/ui": "*",
     "next": "^15.1.0",
+    "pino-pretty": "^10.0.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },

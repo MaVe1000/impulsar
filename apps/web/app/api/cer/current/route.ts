@@ -1,6 +1,10 @@
 import { NextResponse } from 'next/server';
 import { ValueCalculator } from '@/../../services/value-calculator/src/index';
 
+// Force dynamic rendering (prevents build-time execution)
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
+
 // Initialize ValueCalculator (singleton pattern)
 let calculatorInstance: ValueCalculator | null = null;
 
