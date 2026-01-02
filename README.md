@@ -1,4 +1,4 @@
-# ImpulsAR - Digital Public Infrastructure for Social Transfers
+# ImpulsAR - Digital Public Infrastructure for Social Transfers in Argentina
 
 ![ImpulsAR Banner](src/banner.jpg)
 
@@ -13,7 +13,7 @@
 
 ### "Digital public infrastructure for efficient social protection. Government saves $185M USD annually while protecting 9M citizens from inflation."
 
-[🎬 Watch Pitch Video](https://www.youtube.com/watch?v=2sKzz8X2m0Q) | [🌐 Try Live App]| [🐦 Follow on X](https://x.com/ImpulsAr_ARG)
+| [🌐 Try Demo App ](https://impulsar-web.vercel.app) 
 
 ---
 
@@ -1395,17 +1395,16 @@ Available for formal presentation to:
 - 🚧 Batch government transfers
 
 **Next Milestones:**
-- [ ] Phase 3 implementation (Q1-Q2 2026)
-- [ ] Submit to Stellar Community Fund (Q1 2026)
-- [ ] Formal presentation to Argentine government (Q2 2026)
-- [ ] Pilot preparation with 10K beneficiaries (Q2-Q3 2026)
+- [ ] Phase 3 implementation
+- [ ] Formal presentation to Argentine government 
+- [ ] Pilot preparation with 10K beneficiaries 
 
 ---
 
 
 **Built with precision for governments committed to efficient, transparent social protection**
 
-*Modernizing public infrastructure to protect 9M citizens from inflation—at 34:1 ROI.*
+*Modernizing public infrastructure to protect 9M citizens from inflation.*
 
 ---
 
