@@ -2,7 +2,7 @@
 
 ![ImpulsAR Banner](src/banner.jpg)
 
-> **Blockchain-powered social transfers with automatic inflation protection**
+> **Blockchain-powered social transfers with instant settlement and inflation protection through CER-adjusted ARS balances (published and verifiable), with public on-chain traceability and clear redemption into pesos.**
 
 [![Stellar](https://img.shields.io/badge/Stellar-Testnet-7D00FF?style=for-the-badge&logo=stellar)](https://stellar.org)
 [![Next.js](https://img.shields.io/badge/Next.js-14-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
@@ -13,13 +13,13 @@
 
 ### "Digital public infrastructure for efficient social protection. Government saves $185M USD annually while protecting 9M citizens from inflation."
 
-[🎬 Watch Demo Video](#) | [🌐 Try Live App](https://impulsar-web.vercel.app) | [📊 View Pitch](#) | [🐦 Follow on X](https://x.com/ImpulsAr_ARG)
+[🎬 Watch Pitch Video](https://www.youtube.com/watch?v=2sKzz8X2m0Q) | [🌐 Try Live App](https://impulsar-web.vercel.app) | [🐦 Follow on X](https://x.com/ImpulsAr_ARG)
 
 ---
 
 ## What is ImpulsAR?
 
-ImpulsAR is B2G blockchain infrastructure that modernizes how governments distribute social transfers. Built on Stellar, we deliver instant settlement, 99.97% cost reduction, and automatic inflation protection for beneficiaries—eliminating the inefficiencies of traditional banking systems.
+ImpulsAR is B2G blockchain infrastructure that modernizes how governments distribute social transfers. Built on Stellar, we deliver instant settlement, an estimated ~99.97% cost reduction in distribution-rail fees(illustrative, based on program assumptions and excluding off-ramp/cash-out costs), plus inflation protection for beneficiaries—eliminating the inefficiencies of traditional banking systems.
 
 ### "Digital infrastructure for efficient social protection."
 
@@ -44,7 +44,7 @@ ANSES → Bank Intermediary (3-5 days) → Beneficiary
 
 **María receives $100,000 AUH today.**
 
-**30 days later with 5% inflation:**
+**30 days later with aprox 2% inflation:**
 - Her $100,000 can now only buy 95 packages of noodles (down from 100)
 - She lost $5,000 in purchasing power
 - The bank intermediary captured the float returns
@@ -63,18 +63,23 @@ ImpulsAR modernizes **how** government transfers reach citizens, protecting thei
 ```
 Government deposits funds
        ↓
-Investment in CER-adjusted instruments
-(LECAPs, BONCAP, Money Market - grow with inflation)
+Funds invested primarily in short-term LECAPs, BONCAP and money market instruments (liquidity + yield), with an explicit reserve buffer / overcollateralization policy to sustainably fund CER indexation under stress.
        ↓
 ARU tokens issued on Stellar
-(Each ARU backed by CER-adjusted investments)
+(ARU is a CER-indexed unit of account; ARS display = ARU × CER)
        ↓
 Instant blockchain distribution (~5 seconds)
        ↓
 Citizen's balance shown in pesos (ARU × CER)
        ↓
-Investments grow with CER → ARU value in pesos increases automatically
+Daily CER updates are published on-chain → displayed ARS value updates automatically
+(Reserve sustainability ensured via buffer/overcollateralization + government backstop)
+
 ```
+
+**Treasury policy:**
+Funds are invested primarily in short-term LECAPs, BONCAP and Money Market to provide liquidity and yield. ARU balances are indexed to CER via an on-chain oracle. To ensure sustainability under stress scenarios, the system maintains an explicit reserve buffer / overcollateralization policy, and any residual indexation gap is covered by a clearly defined government backstop.
+
 
 ### Business Model: B2G (Business to Government)
 
@@ -102,7 +107,7 @@ The State pays a minimal monthly fee per active beneficiary, making the service 
 - Shown as: $50,000 ARS (73.91 × 676.27)
 - Can buy: 100 packages of noodles
 
-**Day 30 (CER rises to 680.45 due to 5% inflation):**
+**Day 30 (CER rises to 680.45 due to 2% inflation):**
 - Her ARU units: 73.91 (unchanged)
 - CER: 680.45 (updated daily from blockchain)
 - Shown as: $50,309 ARS (73.91 × 680.45)
@@ -114,24 +119,25 @@ The State pays a minimal monthly fee per active beneficiary, making the service 
 
 ## Three Simultaneous Innovations
 
-### 1. Automatic Inflation Protection
+### 1. Inflation Protection
 
 **The Problem:**
-Traditional cash or bank accounts lose purchasing power daily in Argentina (~31% annual inflation, INDEC 2024).
+Traditional cash or bank accounts lose purchasing power daily in Argentina (~31% annual inflation, INDEC 2025).
 
 **Our Solution:**
-ARU is a unit of account indexed to CER (Coeficiente de Estabilización de Referencia), **backed by government investment in CER-adjusted instruments (LECAPs, BONCAP, Money Market funds)**. The CER value is published daily on-chain via signed smart contract (CEROracle), ensuring immutable and verifiable indexation.
+ARU is a unit of account indexed to CER (Coeficiente de Estabilización de Referencia), **backed by government investment in instruments like LECAPs, BONCAP, Money Market funds**. The CER value is published daily on-chain via signed smart contract (CEROracle), ensuring immutable and verifiable indexation.
 
 **How the backing works:**
 - Government deposits transfer funds ($25B annually)
-- Funds invested in CER-adjusted State instruments that grow with inflation
+- Funds invested primarily in short-term LECAPs (and money market instruments) to provide liquidity and yield,
+under an explicit reserve buffer / overcollateralization policy designed to absorb indexation mismatch vs CER
 - ARU tokens issued on blockchain, representing ownership stake
-- As instruments grow with CER, ARU value in pesos increases automatically
+- As CER increases, the displayed ARS value updates automatically (ARU × CER). The reserve portfolio is managed to sustainably fund redemptions under the buffer/overcollateralization policy.
 - **Without this investment, State would have deficit when beneficiaries withdraw**
 
 **Real Impact:**
 - María's $50,000 maintains buying power over 30 days
-- Saves ~$2,500/month vs traditional system (5% inflation)
+- Saves ~$2,500/month vs traditional system (2% inflation)
 - Annualized: $30,000+ protection for typical beneficiary
 
 ### 2. Verifiable Transparency
@@ -208,7 +214,7 @@ Banking intermediaries charge $185M/year for distribution, with 3-5 day delays.
 ### ARU Token Mechanics
 
 **What is CER?**
-CER (Coeficiente de Estabilización de Referencia) is an official daily index published by Argentina's Central Bank (BCRA) that tracks inflation measured by INDEC. Base: 02/02/2002 = 1.00, Current: ~676.27 (January 2025).
+CER (Coeficiente de Estabilización de Referencia) is an official daily index published by Argentina's Central Bank (BCRA) that tracks inflation measured by INDEC, for indexation in Argentina. Base: 02/02/2002 = 1.00, Current: ~676.27 (January 2025).
 
 **How ARU protects purchasing power:**
 
@@ -233,7 +239,7 @@ CER (Coeficiente de Estabilización de Referencia) is an official daily index pu
 
 **ARU is BOTH:**
 1. ✅ **Unit of account indexed to CER** (mathematical conversion: ARU × CER = Pesos)
-2. ✅ **Backed by State investment in CER-adjusted instruments** (LECAPs, BONCAP, Money Market)
+2. ✅ **Backed by a conservative reserve portfolio (e.g., short-term LECAPs, BONCAP, and money market instruments), managed with an explicit buffer/overcollateralization policy.**
 
 **Why backing is essential:**
 
@@ -244,7 +250,7 @@ Day 1: State receives $100,000 for María
        State deposits in regular account
        State issues 100 ARU (at CER 1000)
 
-Day 30: CER rises to 1050 (5% inflation)
+Day 30: CER rises to 1050 (2% inflation)
         María wants to withdraw: 100 ARU × 1050 = $105,000
         State only has: $100,000 (account didn't grow)
         ❌ DEFICIT: $5,000 - State must pay from Treasury
@@ -253,11 +259,11 @@ Day 30: CER rises to 1050 (5% inflation)
 WITH Investment (Sustainable):
 ────────────────────────────────
 Day 1: State receives $100,000 for María
-       State invests in LECAPs (CER-adjusted bonds)
+       State invests in a conservative reserve portfolio (e.g., short-term LECAPs / money market).
        State issues 100 ARU (at CER 1000)
 
-Day 30: CER rises to 1050 (5% inflation)
-        LECAPs grew: $100,000 → $105,000 (automatic CER adjustment)
+Day 30: CER rises to 1050 (2% inflation)
+        Reserve coverage: $100,000 + buffer/overcollateralization absorbs the indexation gap.
         María withdraws: 100 ARU × 1050 = $105,000
         State has: $105,000 from LECAPs
         ✅ BALANCED: Investment growth covers inflation protection
@@ -320,9 +326,10 @@ Day 30: CER rises to 1050 (5% inflation)
 ImpulsAR chose Stellar blockchain for **5 technical reasons** that make it the ONLY viable option for government-scale social transfers:
 
 ### 1. Proven Government Precedent
-- **Republic of Marshall Islands** uses Stellar for social transfers (USDM/ENRA) since November 2023
-- **40,000 beneficiaries**, 0 security incidents, 89% adoption in first year
-- Same economic pattern: *value appreciation → citizen (not intermediary)*
+- **Republic of Marshall Islands** uses Stellar for social transfers (USDM/ENRA) since November 2025.
+- **Operational reference case with initial distributions completed in Nov 2025.**
+- **National-scale reference case (island nation context).**
+- **Same economic pattern: *value appreciation → citizen (not intermediary)**
 - **If it works for a sovereign nation, it can scale 100x for Argentina**
 
 ### 2. Economics That Make Sense
@@ -340,6 +347,8 @@ Savings:             99.97% cost reduction
 - Banking: 4.2M × $5 average fee = **$21 million USD**
 
 This isn't optimization. It's **disruption**.
+
+*Estimated cost reduction (illustrative, based on program assumptions).*
 
 ### 3. Native Assets = Simplicity
 - **No complex smart contracts needed** (vs ERC-20 on Ethereum)
@@ -473,7 +482,7 @@ impulsar/
 │
 ├── turbo.json                         # Turborepo configuration
 ├── package.json                       # Root package.json
-└── README.md                          # Original project README
+└── README.md                          # Project README
 ```
 
 **Key Additions Since Original README:**
@@ -692,7 +701,8 @@ Source: CEROracle (Blockchain)
 
 **ARU Classification:**
 ```
-ARU ≠ Cryptocurrency
+ARU is not a speculative, freely traded cryptocurrency. It is a CER-indexed unit of account used for public transfer/redemption under program rules, with AML/KYC controls and regulated off-chain redemption.
+
 ARU = Digital unit of account indexed to CER
       (official BCRA inflation index)
 ```
@@ -733,7 +743,7 @@ ARU = Digital unit of account indexed to CER
 
 ## International Precedent
 
-### Marshall Islands: ENRA/USDM (November 2023)
+### Marshall Islands: ENRA/USDM (November 2025)
 
 The Republic of Marshall Islands launched ENRA (Ecological & National Reparation Asset), a digital currency that distributes sovereign bond yields directly to citizens.
 
@@ -742,11 +752,11 @@ The Republic of Marshall Islands launched ENRA (Ecological & National Reparation
 | Aspect | Marshall Islands | ImpulsAR Argentina |
 |--------|-----------------|-------------------|
 | **Scale** | 40,000 people | 4.2M (100x larger) |
-| **Launch** | Nov 2023 | Proposed 2026 |
+| **Launch** | Nov 2025 | Proposed 2026-2027 |
 | **Indexation** | USD sovereign bonds | ARS CER (BCRA index) |
-| **Inflation Context** | ~2% annually | ~31% annually (INDEC) |
+| **Inflation Context** | ~2% annually | ~31% annually (2025) (INDEC) |
 | **Mechanism** | Direct distribution | CER-based auto-adjustment |
-| **Programs** | Single UBI | Multi-program (AUH, Alimentar, Progresar) |
+| **Programs** | Single UBI | Multi-program (AUH, Alimentar, Progresar, etc) |
 | **Wallet** | Lomalo (custom) | Crossmint (universal) |
 
 **Core Similarity:**
@@ -756,7 +766,6 @@ Both systems transfer value appreciation to citizens instead of intermediaries. 
 - Stellar blockchain: 99.9% uptime, government-tested
 - Instant settlement: ~5 seconds
 - Minimal fees: ~$0.00001 per transaction
-- Proven at scale: 2+ years operational
 
 ---
 
@@ -833,7 +842,7 @@ This isn't a social spending increase—it's infrastructure modernization with m
 
 ## Roadmap
 
-### Phase 1: Ideathon (December 2024) ✅
+### Phase 1: Ideathon ✅
 
 **Deliverables:**
 - ✅ Functional testnet demo
@@ -844,7 +853,7 @@ This isn't a social spending increase—it's infrastructure modernization with m
 
 **Objective:** Demonstrate technical + economic viability
 
-### Phase 2: Core Infrastructure (January 2025) ✅
+### Phase 2: Core Infrastructure ✅
 
 **Overall Progress: 100% COMPLETE**
 
@@ -901,9 +910,6 @@ This isn't a social spending increase—it's infrastructure modernization with m
 - Batch transfer processing (5-10 simultaneous transfers)
 - Multi-signature government approval (mock BCRA + ANSES)
 - Transfer history and transparency dashboard
-
-**Documentation:**
-- `/docs-ai/learning-path/08-Phase-3-Government-Transfers-Implementation.md` (20,000+ words)
 
 ---
 
@@ -1009,7 +1015,7 @@ await bankingAPI.transfer({
 ARU **cannot** be traded on DEXs because:
 
 1. **Fixed Mathematical Value:** ARU × CER = Pesos (not market-determined)
-2. **Not Speculative:** ARU is a government accounting unit, not a cryptocurrency
+2. **Not Speculative:** ARU is a government accounting unit. ARU is not a speculative, freely traded cryptocurrency. It is a CER-indexed unit of account used for public transfer/redemption under program rules, with AML/KYC controls and regulated off-chain redemption.
 3. **No Market Price:** There's no "bid/ask" for ARU—only redemption with the State
 4. **Partially Centralized by Design:** ARU requires government redemption backend (off-chain bank transfers), making it incompatible with fully decentralized trading
 
@@ -1125,15 +1131,6 @@ TOTAL Year 3: $900 + $70M = $70M USD/year
 - ✅ UIF sanctions list check
 - ✅ Immutable audit trail (Supabase + Stellar)
 - ✅ Fraud detection (unusual withdrawal patterns)
-
-**Complete Off-Ramping Documentation:**
-- `/docs-ai/learning-path/FASE-3-OFF-RAMPING-IMPLEMENTATION.md`
-  - Full TypeScript implementation code
-  - Banking/cash network integrations
-  - Security and AML compliance
-  - Merchant QR system architecture
-  - Real-world cost analysis
-
 ---
 
 ## Real-World Implementation Roadmap
@@ -1170,34 +1167,6 @@ TOTAL Year 3: $900 + $70M = $70M USD/year
 **This roadmap assumes successful technical demo and government partnership.**
 
 ---
-
-## Technical Documentation
-
-### Complete Documentation Suite
-
-This project includes **extensive technical documentation** (20,000+ words) covering architecture, economics, and implementation:
-
-1. **[07-CER-Oracle-Architecture-Economic-Technical-Analysis.md](07-CER-Oracle-Architecture-Economic-Technical-Analysis.md)**
-   - Complete explanation of CEROracle and AttestationManager contracts
-   - Why CER is stored on-chain vs off-chain
-   - Double signature implications (ANSES + BCRA)
-   - Economic, DeFi, and regulatory context
-   - How CER flows from BCRA to blockchain (6-step process)
-   - Supabase role as cache vs source of truth
-   - Security mechanisms and fraud prevention
-   - Critical analysis: "Was this the best design?"
-
-2. **[08-Phase-3-Government-Transfers-Implementation.md](08-Phase-3-Government-Transfers-Implementation.md)**
-   - How government identifies beneficiaries (DNI → Email → Wallet)
-   - ARU token mechanics on Stellar (Native Asset vs Soroban)
-   - Crossmint integration with Stellar
-   - Currency conversion (Pesos ↔ ARU) - mathematical, not exchange
-   - TransferEngine implementation (batch transfers)
-   - Withdrawal flow (ARU → Pesos via bank transfer)
-   - Security: KYC, OTP, multi-sig, clawback
-   - Why ARU is not tradeable (economic analysis)
-   - Step-by-step Phase 3 implementation roadmap
-
 ### Architecture Diagrams
 
 **CER Flow (Off-Chain to On-Chain):**
@@ -1294,7 +1263,7 @@ Push notification sent
    }
    ```
 
-5. **Test Transparency Portal:**
+5. **Test Transparency Portal:** (Not implemented yet)
    - Visit [impulsar-web.vercel.app/transparencia](https://impulsar-web.vercel.app/transparencia)
    - View live CER from blockchain
    - Check signature verification
@@ -1339,12 +1308,9 @@ We welcome contributions from the community!
 
 ### Areas Needing Contribution
 
-- [ ] TransferEngine contract (Soroban - Rust)
 - [ ] Mobile app development (React Native)
 - [ ] Additional wallet integrations (Freighter, Albedo)
-- [ ] Spanish/Portuguese translations
-- [ ] Load testing for 4.2M concurrent users
-- [ ] Accessibility improvements (WCAG 2.1 AA)
+- [ ] Accessibility and frontend improvements (WCAG 2.1 AA)
 
 ---
 
